@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import Image from "next/image";
@@ -9,6 +9,8 @@ import {
   ExternalLink, 
   Clock,
   User,
+  Volume2,
+  VolumeX
 } from "lucide-react";
 
 interface Song {
@@ -34,10 +36,10 @@ interface FavoriteSongsProps {
 
 const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
   const [playingId, setPlayingId] = useState<string | null>(null);
-//   const [currentTime, setCurrentTime] = useState(0);
-//   const [duration, setDuration] = useState(0);
-//   const [volume, setVolume] = useState(0.7);
-//   const [isMuted, setIsMuted] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [volume, setVolume] = useState(0.7);
+  const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const isDark = theme === "primary";
 
@@ -76,101 +78,237 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
   ];
 
   // Audio functionality
-//   useEffect(() => {
-//     const audio = audioRef.current;
-//     if (!audio) return;
-
-//     // const updateTime = () => setCurrentTime(audio.currentTime);
-//     // const updateDuration = () => setDuration(audio.duration);
-//     const handleEnded = () => {
-//       setPlayingId(null);
-//     //   setCurrentTime(0);
-//     };
-
-//     // audio.addEventListener('timeupdate', updateTime);
-//     audio.addEventListener('loadedmetadata', updateDuration);
-//     audio.addEventListener('ended', handleEnded);
-
-//     return () => {
-//     //   audio.removeEventListener('timeupdate', updateTime);
-//       audio.removeEventListener('loadedmetadata', updateDuration);
-//       audio.removeEventListener('ended', handleEnded);
-//     };
-//   }, [playingId]);
-
-  const handlePlayPause = async (song: Song) => {
+  useEffect(() => {
     const audio = audioRef.current;
+    if (!audio) return;
+
+    const updateTime = () => {
+      if (audio.currentTime) {
+        setCurrentTime(audio.currentTime);
+      }
+    };
     
-    if (playingId === song.id) {
-      // Pause current song
-      if (audio) {
-        audio.pause();
+    const updateDuration = () => {
+      if (audio.duration && !isNaN(audio.duration) && isFinite(audio.duration)) {
+        setDuration(audio.duration);
       }
+    };
+    
+    const handleLoadedData = () => {
+      if (audio.duration && !isNaN(audio.duration) && isFinite(audio.duration)) {
+        setDuration(audio.duration);
+      }
+    };
+    
+    const handleCanPlay = () => {
+      if (audio.duration && !isNaN(audio.duration) && isFinite(audio.duration)) {
+        setDuration(audio.duration);
+      }
+    };
+    
+    const handleEnded = () => {
       setPlayingId(null);
-    } else {
-      // Play new song
-      if (audio) {
-        audio.pause();
-      }
+      setCurrentTime(0);
+    };
+
+    const handleError = (e: unknown) => {
+      console.error('Audio error:', e);
+      setPlayingId(null);
+      setCurrentTime(0);
+      setDuration(0);
+    };
+
+    audio.addEventListener('timeupdate', updateTime);
+    audio.addEventListener('loadedmetadata', updateDuration);
+    audio.addEventListener('loadeddata', handleLoadedData);
+    audio.addEventListener('canplay', handleCanPlay);
+    audio.addEventListener('ended', handleEnded);
+    audio.addEventListener('error', handleError);
+
+    return () => {
+      audio.removeEventListener('timeupdate', updateTime);
+      audio.removeEventListener('loadedmetadata', updateDuration);
+      audio.removeEventListener('loadeddata', handleLoadedData);
+      audio.removeEventListener('canplay', handleCanPlay);
+      audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener('error', handleError);
+    };
+  }, [playingId]);
+
+ const handlePlayPause = async (song: Song, startTime?: number) => {
+  const audio = audioRef.current;
+  
+  if (playingId === song.id && !startTime) {
+    if (audio) {
+      audio.pause();
+    }
+    setPlayingId(null);
+  } else {
+    // Stop current audio if playing
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+    
+    if (song.audioUrl) {
+      const newAudio = new Audio(song.audioUrl);
+      newAudio.volume = isMuted ? 0 : volume;
+      newAudio.preload = 'auto'; // Changed from 'metadata' to 'auto' for full loading
+      audioRef.current = newAudio;
       
-      if (song.audioUrl) {
-        const newAudio = new Audio(song.audioUrl);
-        // newAudio.volume = isMuted ? 0 : volume;
-        audioRef.current = newAudio;
-        
-        try {
-          await newAudio.play();
-          setPlayingId(song.id);
-        } catch (error) {
-          console.error('Error playing audio:', error);
-          // Fallback to YouTube if direct audio fails
-          if (song.youtubeUrl) {
-            window.open(song.youtubeUrl, '_blank');
+      try {
+        // Wait for the audio to be fully loaded
+        await new Promise((resolve, reject) => {
+          const onLoadedData = () => {
+            // Check if we have valid duration
+            if (newAudio.duration && !isNaN(newAudio.duration) && isFinite(newAudio.duration)) {
+              setDuration(newAudio.duration);
+              
+              // Set start time if specified, after duration is available
+              if (startTime && startTime > 0 && startTime < newAudio.duration) {
+                newAudio.currentTime = startTime;
+                setCurrentTime(startTime);
+              } else {
+                setCurrentTime(0);
+              }
+              
+              cleanup();
+              resolve(null);
+            }
+          };
+          
+          const onCanPlayThrough = () => {
+            // Audio can play through without interruption
+            if (newAudio.duration && !isNaN(newAudio.duration) && isFinite(newAudio.duration)) {
+              setDuration(newAudio.duration);
+              
+              // Set start time if specified
+              if (startTime && startTime > 0 && startTime < newAudio.duration) {
+                newAudio.currentTime = startTime;
+                setCurrentTime(startTime);
+              } else {
+                setCurrentTime(0);
+              }
+              
+              cleanup();
+              resolve(null);
+            }
+          };
+          
+          const onError = (e: unknown) => {
+            console.error('Audio loading error:', e);
+            cleanup();
+            reject(new Error('Failed to load audio'));
+          };
+          
+          const onTimeout = () => {
+            console.error('Audio loading timeout');
+            cleanup();
+            reject(new Error('Audio loading timeout'));
+          };
+          
+          const cleanup = () => {
+            newAudio.removeEventListener('loadeddata', onLoadedData);
+            newAudio.removeEventListener('canplaythrough', onCanPlayThrough);
+            newAudio.removeEventListener('error', onError);
+            clearTimeout(timeoutId);
+          };
+          
+          // Set up event listeners
+          newAudio.addEventListener('loadeddata', onLoadedData);
+          newAudio.addEventListener('canplaythrough', onCanPlayThrough);
+          newAudio.addEventListener('error', onError);
+          
+          // Set timeout to prevent infinite waiting
+          const timeoutId = setTimeout(onTimeout, 10000); // 10 seconds timeout
+          
+          // Load the audio
+          newAudio.load();
+          
+          // If already loaded, trigger immediately
+          if (newAudio.readyState >= 2) { // HAVE_CURRENT_DATA or higher
+            onLoadedData();
+          } else if (newAudio.readyState >= 4) { // HAVE_ENOUGH_DATA
+            onCanPlayThrough();
           }
-        }
-      } else if (song.youtubeUrl) {
-        // Fallback to YouTube
-        window.open(song.youtubeUrl, '_blank');
+        });
+        
+        // Now play the audio
+        await newAudio.play();
+        setPlayingId(song.id);
+        
+      } catch (e) {
+        console.error('Error loading/playing audio:', e);
+        setPlayingId(null);
+        setCurrentTime(0);
+        setDuration(0);
+        
+        // Show user-friendly error message
+        alert(`Unable to play "${song.title}". The audio file may not be available or there was a network error.`);
       }
+    }
+  }
+};
+
+  const handleVolumeChange = (newVolume: number) => {
+    setVolume(newVolume);
+    if (audioRef.current) {
+      audioRef.current.volume = isMuted ? 0 : newVolume;
     }
   };
 
-//   const handleVolumeChange = (newVolume: number) => {
-//     setVolume(newVolume);
-//     if (audioRef.current) {
-//       audioRef.current.volume = isMuted ? 0 : newVolume;
-//     }
-//   };
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+    if (audioRef.current) {
+      audioRef.current.volume = !isMuted ? 0 : volume;
+    }
+  };
 
-//   const toggleMute = () => {
-//     setIsMuted(!isMuted);
-//     if (audioRef.current) {
-//       audioRef.current.volume = !isMuted ? 0 : volume;
-//     }
-//   };
+  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+    const audio = audioRef.current;
+    if (!audio || !duration || duration === 0) return;
 
-//   const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
-//     const audio = audioRef.current;
-//     if (!audio || !duration) return;
-
-//     const rect = e.currentTarget.getBoundingClientRect();
-//     const x = e.clientX - rect.left;
-//     const percentage = x / rect.width;
-//     const newTime = percentage * duration;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const percentage = Math.max(0, Math.min(1, x / rect.width));
+    const newTime = percentage * duration;
     
-//     audio.currentTime = newTime;
-//     setCurrentTime(newTime);
+    try {
+      audio.currentTime = newTime;
+      setCurrentTime(newTime);
+    } catch (error) {
+      console.error('Error seeking:', error);
+    }
+  };
+
+  const formatTime = (time: number) => {
+    if (!time || isNaN(time) || !isFinite(time)) return "0:00";
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  // Function to play song from specific time
+//   const playFromTime = (song: Song, timeString: string) => {
+//     const timeParts = timeString.split(':');
+//     let seconds = 0;
+    
+//     if (timeParts.length === 2) {
+//       // MM:SS format
+//       seconds = parseInt(timeParts[0]) * 60 + parseInt(timeParts[1]);
+//     } else if (timeParts.length === 1) {
+//       // Just seconds
+//       seconds = parseInt(timeParts[0]);
+//     }
+    
+//     if (!isNaN(seconds) && seconds >= 0) {
+//       handlePlayPause(song, seconds);
+//     }
 //   };
 
-//   const formatTime = (time: number) => {
-//     const minutes = Math.floor(time / 60);
-//     const seconds = Math.floor(time % 60);
-//     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-//   };
-
-//   const getCurrentSong = () => {
-//     return favoriteSongs.find(song => song.id === playingId);
-//   };
+  const getCurrentSong = () => {
+    return favoriteSongs.find(song => song.id === playingId);
+  };
 
   const getMoodColor = (mood: string) => {
     switch (mood.toLowerCase()) {
@@ -198,7 +336,6 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
       <div className={`flex items-center gap-3 mb-6 text-${isDark ? 'white' : 'gray-900'}`}>
         <Music className="w-5 h-5" />
         <h2 className="text-xl font-semibold tracking-tight">Favorite Songs</h2>
-        {/* <Heart className={`w-4 h-4 ${isDark ? 'text-red-400' : 'text-red-500'}`} /> */}
       </div>
 
       <div className="space-y-4">
@@ -320,7 +457,7 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
                   </div>
 
                   {/* External Links */}
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 flex-wrap">
                     {song.youtubeUrl && (
                       <button
                         onClick={() => window.open(song.youtubeUrl, "_blank")}
@@ -354,6 +491,88 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
           </Card>
         ))}
       </div>
+
+      {/* Music Player Controls - Only show when playing */}
+      {playingId && getCurrentSong() && (
+        <Card className={`mt-6 ${
+          isDark
+            ? "bg-gray-800/50 border-gray-700/50"
+            : "bg-white border-gray-200"
+        }`}>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-4">
+              <div className="flex-1">
+                <h4 className={`font-medium ${isDark ? "text-white" : "text-gray-900"}`}>
+                  Now Playing: {getCurrentSong()?.title}
+                </h4>
+                <p className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>
+                  {getCurrentSong()?.artist}
+                </p>
+              </div>
+              
+              {/* Volume Control */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={toggleMute}
+                  className={`p-1 rounded transition-colors ${
+                    isDark ? "hover:bg-gray-700" : "hover:bg-gray-100"
+                  }`}
+                >
+                  {isMuted ? (
+                    <VolumeX className={`w-4 h-4 ${isDark ? "text-gray-400" : "text-gray-600"}`} />
+                  ) : (
+                    <Volume2 className={`w-4 h-4 ${isDark ? "text-gray-400" : "text-gray-600"}`} />
+                  )}
+                </button>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.1"
+                  value={volume}
+                  onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
+                  className="w-16"
+                />
+              </div>
+            </div>
+            
+            {/* Progress Bar */}
+            <div className="mt-3">
+              <div className="flex items-center gap-2 text-xs">
+                <span className={isDark ? "text-gray-400" : "text-gray-600"}>
+                  {formatTime(currentTime)}
+                </span>
+                <div
+                  className={`flex-1 h-2 rounded-full cursor-pointer relative ${
+                    isDark ? "bg-gray-700" : "bg-gray-200"
+                  }`}
+                  onClick={handleSeek}
+                >
+                  <div
+                    className="h-full bg-blue-500 rounded-full transition-all"
+                    style={{
+                      width: duration > 0 ? `${Math.min(100, (currentTime / duration) * 100)}%` : "0%"
+                    }}
+                  />
+                  {/* Progress indicator dot */}
+                  {duration > 0 && (
+                    <div
+                      className="absolute top-1/2 transform -translate-y-1/2 w-3 h-3 bg-blue-500 rounded-full border-2 border-white shadow-sm"
+                      style={{
+                        left: `${Math.min(100, (currentTime / duration) * 100)}%`,
+                        marginLeft: '-6px'
+                      }}
+                    />
+                  )}
+                </div>
+                <span className={isDark ? "text-gray-400" : "text-gray-600"}>
+                  {duration > 0 ? formatTime(duration) : "--:--"}
+                </span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Music Note */}
       <div className={`mt-6 p-4 rounded-lg ${

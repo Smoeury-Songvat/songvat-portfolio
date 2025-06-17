@@ -22,6 +22,7 @@ interface ExperienceProps {
 }
 
 const Experience = ({ theme }: ExperienceProps) => {
+  theme = theme === "primary" ? "dark" : "light"; // Adjust theme for dark/light mode
   // Sample data - replace with your actual experience
   const experiences: ExperienceItem[] = [
     {
@@ -266,7 +267,7 @@ const Experience = ({ theme }: ExperienceProps) => {
               }
             >
               <div className="flex items-center">
-                <span className="mr-1">View Certificate</span>
+                <span className="mr-1">View Details</span>
                 <ExternalLink className="w-3 h-3" />
               </div>
             </button>

@@ -3,6 +3,8 @@ import { Description } from "./Description";
 import { motion } from "motion/react";
 import { Education } from "./Education";
 import { Experience } from "./Experience";
+import { Footer } from "./Footer";
+import { FavoriteSongs } from "./FavoriteSongs";
 
 interface ContentProps {
   theme: string;
@@ -23,6 +25,8 @@ const Content = ({ theme }: ContentProps) => {
         <Description theme={theme} />
         <Education theme={theme} />
         <Experience theme={theme}/>
+        <FavoriteSongs theme={theme} />
+        <Footer theme={theme} />
       </motion.div>
     </main>
   );

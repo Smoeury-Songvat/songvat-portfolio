@@ -30,7 +30,7 @@ const Education = ({ theme }: EducationProps) => {
             <div className={`flex items-center gap-3 text-${theme}-foreground`}>
               <GraduationCap className={`w-5 h-5 `} />
               <h2 className={`text-xl font-semibold tracking-tight`}>
-                Experience
+                Education
               </h2>
             </div>
             <CardDescription className="text-sm opacity-80 pt-3 pb-2 pl-1">

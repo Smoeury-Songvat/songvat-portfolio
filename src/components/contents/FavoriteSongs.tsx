@@ -49,7 +49,7 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
       title: "មេឃបើកថ្ងៃ",
       artist: "KWAN",
       featuring: "Vannda",
-      duration: "3:42",
+      duration: "3:37",
       genre: "Khmer Pop",
       year: "2023",
       youtubeUrl: "https://www.youtube.com/watch?v=toJ4nn_WmeQ",
@@ -242,9 +242,6 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
         setPlayingId(null);
         setCurrentTime(0);
         setDuration(0);
-        
-        // Show user-friendly error message
-        alert(`Unable to play "${song.title}". The audio file may not be available or there was a network error.`);
       }
     }
   }
@@ -287,24 +284,6 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
-
-  // Function to play song from specific time
-//   const playFromTime = (song: Song, timeString: string) => {
-//     const timeParts = timeString.split(':');
-//     let seconds = 0;
-    
-//     if (timeParts.length === 2) {
-//       // MM:SS format
-//       seconds = parseInt(timeParts[0]) * 60 + parseInt(timeParts[1]);
-//     } else if (timeParts.length === 1) {
-//       // Just seconds
-//       seconds = parseInt(timeParts[0]);
-//     }
-    
-//     if (!isNaN(seconds) && seconds >= 0) {
-//       handlePlayPause(song, seconds);
-//     }
-//   };
 
   const getCurrentSong = () => {
     return favoriteSongs.find(song => song.id === playingId);

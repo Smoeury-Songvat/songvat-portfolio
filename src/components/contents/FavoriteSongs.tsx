@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import Image from "next/image";
@@ -34,10 +34,10 @@ interface FavoriteSongsProps {
 
 const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
   const [playingId, setPlayingId] = useState<string | null>(null);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(0.7);
-  const [isMuted, setIsMuted] = useState(false);
+//   const [currentTime, setCurrentTime] = useState(0);
+//   const [duration, setDuration] = useState(0);
+//   const [volume, setVolume] = useState(0.7);
+//   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const isDark = theme === "primary";
 
@@ -76,27 +76,27 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
   ];
 
   // Audio functionality
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
+//   useEffect(() => {
+//     const audio = audioRef.current;
+//     if (!audio) return;
 
-    const updateTime = () => setCurrentTime(audio.currentTime);
-    const updateDuration = () => setDuration(audio.duration);
-    const handleEnded = () => {
-      setPlayingId(null);
-      setCurrentTime(0);
-    };
+//     // const updateTime = () => setCurrentTime(audio.currentTime);
+//     // const updateDuration = () => setDuration(audio.duration);
+//     const handleEnded = () => {
+//       setPlayingId(null);
+//     //   setCurrentTime(0);
+//     };
 
-    audio.addEventListener('timeupdate', updateTime);
-    audio.addEventListener('loadedmetadata', updateDuration);
-    audio.addEventListener('ended', handleEnded);
+//     // audio.addEventListener('timeupdate', updateTime);
+//     audio.addEventListener('loadedmetadata', updateDuration);
+//     audio.addEventListener('ended', handleEnded);
 
-    return () => {
-      audio.removeEventListener('timeupdate', updateTime);
-      audio.removeEventListener('loadedmetadata', updateDuration);
-      audio.removeEventListener('ended', handleEnded);
-    };
-  }, [playingId]);
+//     return () => {
+//     //   audio.removeEventListener('timeupdate', updateTime);
+//       audio.removeEventListener('loadedmetadata', updateDuration);
+//       audio.removeEventListener('ended', handleEnded);
+//     };
+//   }, [playingId]);
 
   const handlePlayPause = async (song: Song) => {
     const audio = audioRef.current;
@@ -115,7 +115,7 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
       
       if (song.audioUrl) {
         const newAudio = new Audio(song.audioUrl);
-        newAudio.volume = isMuted ? 0 : volume;
+        // newAudio.volume = isMuted ? 0 : volume;
         audioRef.current = newAudio;
         
         try {
@@ -135,42 +135,42 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
     }
   };
 
-  const handleVolumeChange = (newVolume: number) => {
-    setVolume(newVolume);
-    if (audioRef.current) {
-      audioRef.current.volume = isMuted ? 0 : newVolume;
-    }
-  };
+//   const handleVolumeChange = (newVolume: number) => {
+//     setVolume(newVolume);
+//     if (audioRef.current) {
+//       audioRef.current.volume = isMuted ? 0 : newVolume;
+//     }
+//   };
 
-  const toggleMute = () => {
-    setIsMuted(!isMuted);
-    if (audioRef.current) {
-      audioRef.current.volume = !isMuted ? 0 : volume;
-    }
-  };
+//   const toggleMute = () => {
+//     setIsMuted(!isMuted);
+//     if (audioRef.current) {
+//       audioRef.current.volume = !isMuted ? 0 : volume;
+//     }
+//   };
 
-  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
-    const audio = audioRef.current;
-    if (!audio || !duration) return;
+//   const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+//     const audio = audioRef.current;
+//     if (!audio || !duration) return;
 
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const percentage = x / rect.width;
-    const newTime = percentage * duration;
+//     const rect = e.currentTarget.getBoundingClientRect();
+//     const x = e.clientX - rect.left;
+//     const percentage = x / rect.width;
+//     const newTime = percentage * duration;
     
-    audio.currentTime = newTime;
-    setCurrentTime(newTime);
-  };
+//     audio.currentTime = newTime;
+//     setCurrentTime(newTime);
+//   };
 
-  const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-  };
+//   const formatTime = (time: number) => {
+//     const minutes = Math.floor(time / 60);
+//     const seconds = Math.floor(time % 60);
+//     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+//   };
 
-  const getCurrentSong = () => {
-    return favoriteSongs.find(song => song.id === playingId);
-  };
+//   const getCurrentSong = () => {
+//     return favoriteSongs.find(song => song.id === playingId);
+//   };
 
   const getMoodColor = (mood: string) => {
     switch (mood.toLowerCase()) {

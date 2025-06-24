@@ -10,7 +10,8 @@ import {
   Clock,
   User,
   Volume2,
-  VolumeX
+  VolumeX,
+  Loader2
 } from "lucide-react";
 
 interface Song {
@@ -41,6 +42,8 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
   const [volume, setVolume] = useState(0.7);
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingSongId, setLoadingSongId] = useState<string | null>(null);
   const isDark = theme === "primary";
 
   const favoriteSongs: Song[] = [
@@ -69,15 +72,30 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
       year: "2024",
       youtubeUrl: "https://www.youtube.com/watch?v=r67B4cS-oCo",
       spotifyUrl: "https://open.spotify.com/track/68EWw08VyD1oZwofVltpjv",
-      audioUrl: "2MDIE.mp3", // Sample audio
+      audioUrl: "2MDIE.mp3", 
       coverColor: "from-purple-400 to-pink-500",
       language: "Khmer",
       mood: "Energetic",
-      coverImageUrl: "https://i.ytimg.com/vi/r67B4cS-oCo/maxresdefault.jpg" // Sample cover image
+      coverImageUrl: "https://i.ytimg.com/vi/r67B4cS-oCo/maxresdefault.jpg"
+    },
+    {
+      id: "3",
+      title: "Starboy",
+      artist: "The Weeknd",
+      featuring: "Daft Punk",
+      duration: "3:50",
+      genre: "Pop",
+      year: "2016",
+      youtubeUrl: "https://www.youtube.com/watch?v=34Na4j8AVgA",
+      spotifyUrl: "https://open.spotify.com/track/7MXVkk9YMctZqd1Srtv4MB",
+      audioUrl: "Starboy.mp3",
+      coverColor: "from-blue-900 to-yellow-500",
+      language: "English",
+      mood: "Chill",
+      coverImageUrl: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e2/61/f8/e261f8c1-73db-9a7a-c89e-1068f19970e0/16UMGIM67863.rgb.jpg/1200x630bb.jpg"
     }
   ];
 
-  // Audio functionality
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -109,6 +127,8 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
     const handleEnded = () => {
       setPlayingId(null);
       setCurrentTime(0);
+      setIsLoading(false);
+      setLoadingSongId(null);
     };
 
     const handleError = (e: unknown) => {
@@ -116,6 +136,8 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
       setPlayingId(null);
       setCurrentTime(0);
       setDuration(0);
+      setIsLoading(false);
+      setLoadingSongId(null);
     };
 
     audio.addEventListener('timeupdate', updateTime);
@@ -136,6 +158,8 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
   }, [playingId]);
 
  const handlePlayPause = async (song: Song, startTime?: number) => {
+  if (isLoading || loadingSongId) return;
+
   const audio = audioRef.current;
   
   if (playingId === song.id && !startTime) {
@@ -144,7 +168,10 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
     }
     setPlayingId(null);
   } else {
-    // Stop current audio if playing
+    setIsLoading(true);
+    setLoadingSongId(song.id);
+    
+
     if (audio) {
       audio.pause();
       audio.currentTime = 0;
@@ -153,18 +180,15 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
     if (song.audioUrl) {
       const newAudio = new Audio(song.audioUrl);
       newAudio.volume = isMuted ? 0 : volume;
-      newAudio.preload = 'auto'; // Changed from 'metadata' to 'auto' for full loading
+      newAudio.preload = 'auto';
       audioRef.current = newAudio;
       
       try {
-        // Wait for the audio to be fully loaded
         await new Promise((resolve, reject) => {
           const onLoadedData = () => {
-            // Check if we have valid duration
             if (newAudio.duration && !isNaN(newAudio.duration) && isFinite(newAudio.duration)) {
               setDuration(newAudio.duration);
               
-              // Set start time if specified, after duration is available
               if (startTime && startTime > 0 && startTime < newAudio.duration) {
                 newAudio.currentTime = startTime;
                 setCurrentTime(startTime);
@@ -178,11 +202,9 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
           };
           
           const onCanPlayThrough = () => {
-            // Audio can play through without interruption
             if (newAudio.duration && !isNaN(newAudio.duration) && isFinite(newAudio.duration)) {
               setDuration(newAudio.duration);
               
-              // Set start time if specified
               if (startTime && startTime > 0 && startTime < newAudio.duration) {
                 newAudio.currentTime = startTime;
                 setCurrentTime(startTime);
@@ -214,35 +236,36 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
             clearTimeout(timeoutId);
           };
           
-          // Set up event listeners
           newAudio.addEventListener('loadeddata', onLoadedData);
           newAudio.addEventListener('canplaythrough', onCanPlayThrough);
           newAudio.addEventListener('error', onError);
           
-          // Set timeout to prevent infinite waiting
-          const timeoutId = setTimeout(onTimeout, 10000); // 10 seconds timeout
+          const timeoutId = setTimeout(onTimeout, 10000); 
           
-          // Load the audio
           newAudio.load();
           
-          // If already loaded, trigger immediately
-          if (newAudio.readyState >= 2) { // HAVE_CURRENT_DATA or higher
+          if (newAudio.readyState >= 2) { 
             onLoadedData();
-          } else if (newAudio.readyState >= 4) { // HAVE_ENOUGH_DATA
+          } else if (newAudio.readyState >= 4) { 
             onCanPlayThrough();
           }
         });
         
-        // Now play the audio
         await newAudio.play();
         setPlayingId(song.id);
-        
+        setIsLoading(false);
+        setLoadingSongId(null);
       } catch (e) {
         console.error('Error loading/playing audio:', e);
         setPlayingId(null);
         setCurrentTime(0);
         setDuration(0);
+        setIsLoading(false);
+        setLoadingSongId(null);
       }
+    } else {
+      setIsLoading(false);
+      setLoadingSongId(null);
     }
   }
 };
@@ -310,6 +333,20 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
     }
   };
 
+  const isButtonDisabled = (songId: string) => {
+    return isLoading || (loadingSongId && loadingSongId !== songId);
+  };
+
+  const getPlayButtonContent = (song: Song) => {
+    if (loadingSongId === song.id && isLoading) {
+      return <Loader2 className="w-6 h-6 text-white animate-spin" />;
+    }
+    if (playingId === song.id) {
+      return <Pause className="w-6 h-6 text-white" />;
+    }
+    return <Play className="w-6 h-6 text-white ml-1" />;
+  };
+
   return (
     <section className="w-full mt-6">
       <div className={`flex items-center gap-3 mb-6 text-${isDark ? 'white' : 'gray-900'}`}>
@@ -331,8 +368,12 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
               <div className="flex items-center gap-4">
                 {/* Album Art / Play Button */}
                 <div
-                  className={`relative w-16 h-16 rounded-lg bg-gradient-to-br ${song.coverColor} flex items-center justify-center cursor-pointer transition-transform hover:scale-105`}
-                  onClick={() => handlePlayPause(song)}
+                  className={`relative w-16 h-16 rounded-lg bg-gradient-to-br ${song.coverColor} flex items-center justify-center transition-transform ${
+                    isButtonDisabled(song.id) 
+                      ? 'cursor-not-allowed opacity-70' 
+                      : 'cursor-pointer hover:scale-105'
+                  }`}
+                  onClick={() => !isButtonDisabled(song.id) && handlePlayPause(song)}
                 >
                   {/* If you have a cover image URL, use it as background */}
                   {song.coverImageUrl ? (
@@ -341,7 +382,9 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
                       alt={song.title}
                       width={300}
                       height={300}
-                      className="w-16 h-16 rounded-lg object-cover"
+                      className={`w-16 h-16 rounded-lg object-cover ${
+                        isButtonDisabled(song.id) ? 'opacity-70' : ''
+                      }`}
                       quality={100}
                       priority
                       unoptimized={false}
@@ -352,15 +395,16 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
                     </span>
                   )}
                   <span className="absolute inset-0 flex items-center justify-center z-10">
-                    {playingId === song.id ? (
-                      <Pause className="w-6 h-6 text-white" />
-                    ) : (
-                      <Play className="w-6 h-6 text-white ml-1" />
-                    )}
+                    {getPlayButtonContent(song)}
                   </span>
-                  {playingId === song.id && (
+                  {playingId === song.id && !isLoading && (
                     <div className="absolute -top-1 -right-1">
                       <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                    </div>
+                  )}
+                  {loadingSongId === song.id && isLoading && (
+                    <div className="absolute -top-1 -right-1">
+                      <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
                     </div>
                   )}
                 </div>

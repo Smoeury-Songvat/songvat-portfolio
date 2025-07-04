@@ -68,30 +68,30 @@ export const favoriteSongs = [
 export const images = [
   {
     url: "/images/selfie.jpg",
-    title: "Selfie Vibes",
+    // title: "Selfie Vibes",
   },
   {
     url: "/images/Jroyjangvar.jpg",
-    title: "Jroyjangvar Feels",
+    // title: "Jroyjangvar Feels",
   },
   {
     url: "/images/FromBuilding.jpg",
-    title: "Olampia Views",
+    // title: "Olampia Views",
   },
   {
     url: "/images/Krrirom.jpg",
-    title: "Krrirom Adventures",
+    // title: "Krrirom Adventures",
   },
   {
     url: "/images/PresentCADT.jpg",
-    title: "CADT Moments",
+    // title: "CADT Moments",
   },
   {
     url: "/images/SunsetRUPP.jpg",
-    title: "Golden Hour @ RUPP",
+    // title: "Golden Hour @ RUPP",
   },
   {
     url: "/images/KNY.jpg",
-    title: "KNY 2025 Vibes",
+    // title: "KNY 2025 Vibes",
   },
 ];

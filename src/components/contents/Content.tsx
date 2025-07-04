@@ -5,6 +5,7 @@ import { Education } from "./Education";
 import { Experience } from "./Experience";
 import { Footer } from "./Footer";
 import { FavoriteSongs } from "./FavoriteSongs";
+import { Photo } from "./Phtoto";
 
 interface ContentProps {
   theme: string;
@@ -26,6 +27,7 @@ const Content = ({ theme }: ContentProps) => {
         <Education theme={theme} />
         <Experience theme={theme}/>
         <FavoriteSongs theme={theme} />
+        <Photo theme={theme} />
         <Footer theme={theme} />
       </motion.div>
     </main>

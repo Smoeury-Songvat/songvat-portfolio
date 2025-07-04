@@ -2,17 +2,18 @@ import React, { useState, useRef, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import Image from "next/image";
-import { 
-  Music, 
-  Play, 
-  Pause, 
-  ExternalLink, 
+import {
+  Music,
+  Play,
+  Pause,
+  ExternalLink,
   Clock,
   User,
   Volume2,
   VolumeX,
-  Loader2
+  Loader2,
 } from "lucide-react";
+import { favoriteSongs } from "@/lib/consts";
 
 interface Song {
   id: string;
@@ -46,56 +47,6 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
   const [loadingSongId, setLoadingSongId] = useState<string | null>(null);
   const isDark = theme === "primary";
 
-  const favoriteSongs: Song[] = [
-    {
-      id: "1",
-      title: "មេឃបើកថ្ងៃ",
-      artist: "KWAN",
-      featuring: "Vannda",
-      duration: "3:37",
-      genre: "Khmer Pop",
-      year: "2023",
-      youtubeUrl: "https://www.youtube.com/watch?v=toJ4nn_WmeQ",
-      spotifyUrl: "https://open.spotify.com/track/6HWbL3uNRzkisSZoyqydaT",
-      audioUrl: "berkthgai.mp3", 
-      coverColor: "from-orange-400 to-red-500",
-      language: "Khmer",
-      mood: "Uplifting",
-      coverImageUrl: "https://i.ytimg.com/vi/-9iQ_gmFjmA/maxresdefault.jpg" 
-    },
-    {
-      id: "2", 
-      title: "ឆាឆាឆា (CHA CHA CHA)",
-      artist: "2MDIE",
-      duration: "4:48",
-      genre: "Khmer Hip-Hop",
-      year: "2024",
-      youtubeUrl: "https://www.youtube.com/watch?v=r67B4cS-oCo",
-      spotifyUrl: "https://open.spotify.com/track/68EWw08VyD1oZwofVltpjv",
-      audioUrl: "2MDIE.mp3", 
-      coverColor: "from-purple-400 to-pink-500",
-      language: "Khmer",
-      mood: "Energetic",
-      coverImageUrl: "https://i.ytimg.com/vi/r67B4cS-oCo/maxresdefault.jpg"
-    },
-    {
-      id: "3",
-      title: "Starboy",
-      artist: "The Weeknd",
-      featuring: "Daft Punk",
-      duration: "3:50",
-      genre: "Pop",
-      year: "2016",
-      youtubeUrl: "https://www.youtube.com/watch?v=34Na4j8AVgA",
-      spotifyUrl: "https://open.spotify.com/track/7MXVkk9YMctZqd1Srtv4MB",
-      audioUrl: "Starboy.mp3",
-      coverColor: "from-blue-900 to-yellow-500",
-      language: "English",
-      mood: "Chill",
-      coverImageUrl: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e2/61/f8/e261f8c1-73db-9a7a-c89e-1068f19970e0/16UMGIM67863.rgb.jpg/1200x630bb.jpg"
-    }
-  ];
-
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -105,25 +56,37 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
         setCurrentTime(audio.currentTime);
       }
     };
-    
+
     const updateDuration = () => {
-      if (audio.duration && !isNaN(audio.duration) && isFinite(audio.duration)) {
+      if (
+        audio.duration &&
+        !isNaN(audio.duration) &&
+        isFinite(audio.duration)
+      ) {
         setDuration(audio.duration);
       }
     };
-    
+
     const handleLoadedData = () => {
-      if (audio.duration && !isNaN(audio.duration) && isFinite(audio.duration)) {
+      if (
+        audio.duration &&
+        !isNaN(audio.duration) &&
+        isFinite(audio.duration)
+      ) {
         setDuration(audio.duration);
       }
     };
-    
+
     const handleCanPlay = () => {
-      if (audio.duration && !isNaN(audio.duration) && isFinite(audio.duration)) {
+      if (
+        audio.duration &&
+        !isNaN(audio.duration) &&
+        isFinite(audio.duration)
+      ) {
         setDuration(audio.duration);
       }
     };
-    
+
     const handleEnded = () => {
       setPlayingId(null);
       setCurrentTime(0);
@@ -132,7 +95,7 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
     };
 
     const handleError = (e: unknown) => {
-      console.error('Audio error:', e);
+      console.error("Audio error:", e);
       setPlayingId(null);
       setCurrentTime(0);
       setDuration(0);
@@ -140,135 +103,150 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
       setLoadingSongId(null);
     };
 
-    audio.addEventListener('timeupdate', updateTime);
-    audio.addEventListener('loadedmetadata', updateDuration);
-    audio.addEventListener('loadeddata', handleLoadedData);
-    audio.addEventListener('canplay', handleCanPlay);
-    audio.addEventListener('ended', handleEnded);
-    audio.addEventListener('error', handleError);
+    audio.addEventListener("timeupdate", updateTime);
+    audio.addEventListener("loadedmetadata", updateDuration);
+    audio.addEventListener("loadeddata", handleLoadedData);
+    audio.addEventListener("canplay", handleCanPlay);
+    audio.addEventListener("ended", handleEnded);
+    audio.addEventListener("error", handleError);
 
     return () => {
-      audio.removeEventListener('timeupdate', updateTime);
-      audio.removeEventListener('loadedmetadata', updateDuration);
-      audio.removeEventListener('loadeddata', handleLoadedData);
-      audio.removeEventListener('canplay', handleCanPlay);
-      audio.removeEventListener('ended', handleEnded);
-      audio.removeEventListener('error', handleError);
+      audio.removeEventListener("timeupdate", updateTime);
+      audio.removeEventListener("loadedmetadata", updateDuration);
+      audio.removeEventListener("loadeddata", handleLoadedData);
+      audio.removeEventListener("canplay", handleCanPlay);
+      audio.removeEventListener("ended", handleEnded);
+      audio.removeEventListener("error", handleError);
     };
   }, [playingId]);
 
- const handlePlayPause = async (song: Song, startTime?: number) => {
-  if (isLoading || loadingSongId) return;
+  const handlePlayPause = async (song: Song, startTime?: number) => {
+    if (isLoading || loadingSongId) return;
 
-  const audio = audioRef.current;
-  
-  if (playingId === song.id && !startTime) {
-    if (audio) {
-      audio.pause();
-    }
-    setPlayingId(null);
-  } else {
-    setIsLoading(true);
-    setLoadingSongId(song.id);
-    
+    const audio = audioRef.current;
 
-    if (audio) {
-      audio.pause();
-      audio.currentTime = 0;
-    }
-    
-    if (song.audioUrl) {
-      const newAudio = new Audio(song.audioUrl);
-      newAudio.volume = isMuted ? 0 : volume;
-      newAudio.preload = 'auto';
-      audioRef.current = newAudio;
-      
-      try {
-        await new Promise((resolve, reject) => {
-          const onLoadedData = () => {
-            if (newAudio.duration && !isNaN(newAudio.duration) && isFinite(newAudio.duration)) {
-              setDuration(newAudio.duration);
-              
-              if (startTime && startTime > 0 && startTime < newAudio.duration) {
-                newAudio.currentTime = startTime;
-                setCurrentTime(startTime);
-              } else {
-                setCurrentTime(0);
+    if (playingId === song.id && !startTime) {
+      if (audio) {
+        audio.pause();
+      }
+      setPlayingId(null);
+    } else {
+      setIsLoading(true);
+      setLoadingSongId(song.id);
+
+      if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+
+      if (song.audioUrl) {
+        const newAudio = new Audio(song.audioUrl);
+        newAudio.volume = isMuted ? 0 : volume;
+        newAudio.preload = "auto";
+        audioRef.current = newAudio;
+
+        try {
+          await new Promise((resolve, reject) => {
+            const onLoadedData = () => {
+              if (
+                newAudio.duration &&
+                !isNaN(newAudio.duration) &&
+                isFinite(newAudio.duration)
+              ) {
+                setDuration(newAudio.duration);
+
+                if (
+                  startTime &&
+                  startTime > 0 &&
+                  startTime < newAudio.duration
+                ) {
+                  newAudio.currentTime = startTime;
+                  setCurrentTime(startTime);
+                } else {
+                  setCurrentTime(0);
+                }
+
+                cleanup();
+                resolve(null);
               }
-              
-              cleanup();
-              resolve(null);
-            }
-          };
-          
-          const onCanPlayThrough = () => {
-            if (newAudio.duration && !isNaN(newAudio.duration) && isFinite(newAudio.duration)) {
-              setDuration(newAudio.duration);
-              
-              if (startTime && startTime > 0 && startTime < newAudio.duration) {
-                newAudio.currentTime = startTime;
-                setCurrentTime(startTime);
-              } else {
-                setCurrentTime(0);
+            };
+
+            const onCanPlayThrough = () => {
+              if (
+                newAudio.duration &&
+                !isNaN(newAudio.duration) &&
+                isFinite(newAudio.duration)
+              ) {
+                setDuration(newAudio.duration);
+
+                if (
+                  startTime &&
+                  startTime > 0 &&
+                  startTime < newAudio.duration
+                ) {
+                  newAudio.currentTime = startTime;
+                  setCurrentTime(startTime);
+                } else {
+                  setCurrentTime(0);
+                }
+
+                cleanup();
+                resolve(null);
               }
-              
+            };
+
+            const onError = (e: unknown) => {
+              console.error("Audio loading error:", e);
               cleanup();
-              resolve(null);
+              reject(new Error("Failed to load audio"));
+            };
+
+            const onTimeout = () => {
+              console.error("Audio loading timeout");
+              cleanup();
+              reject(new Error("Audio loading timeout"));
+            };
+
+            const cleanup = () => {
+              newAudio.removeEventListener("loadeddata", onLoadedData);
+              newAudio.removeEventListener("canplaythrough", onCanPlayThrough);
+              newAudio.removeEventListener("error", onError);
+              clearTimeout(timeoutId);
+            };
+
+            newAudio.addEventListener("loadeddata", onLoadedData);
+            newAudio.addEventListener("canplaythrough", onCanPlayThrough);
+            newAudio.addEventListener("error", onError);
+
+            const timeoutId = setTimeout(onTimeout, 10000);
+
+            newAudio.load();
+
+            if (newAudio.readyState >= 2) {
+              onLoadedData();
+            } else if (newAudio.readyState >= 4) {
+              onCanPlayThrough();
             }
-          };
-          
-          const onError = (e: unknown) => {
-            console.error('Audio loading error:', e);
-            cleanup();
-            reject(new Error('Failed to load audio'));
-          };
-          
-          const onTimeout = () => {
-            console.error('Audio loading timeout');
-            cleanup();
-            reject(new Error('Audio loading timeout'));
-          };
-          
-          const cleanup = () => {
-            newAudio.removeEventListener('loadeddata', onLoadedData);
-            newAudio.removeEventListener('canplaythrough', onCanPlayThrough);
-            newAudio.removeEventListener('error', onError);
-            clearTimeout(timeoutId);
-          };
-          
-          newAudio.addEventListener('loadeddata', onLoadedData);
-          newAudio.addEventListener('canplaythrough', onCanPlayThrough);
-          newAudio.addEventListener('error', onError);
-          
-          const timeoutId = setTimeout(onTimeout, 10000); 
-          
-          newAudio.load();
-          
-          if (newAudio.readyState >= 2) { 
-            onLoadedData();
-          } else if (newAudio.readyState >= 4) { 
-            onCanPlayThrough();
-          }
-        });
-        
-        await newAudio.play();
-        setPlayingId(song.id);
-        setIsLoading(false);
-        setLoadingSongId(null);
-      } catch (e) {
-        console.error('Error loading/playing audio:', e);
-        setPlayingId(null);
-        setCurrentTime(0);
-        setDuration(0);
+          });
+
+          await newAudio.play();
+          setPlayingId(song.id);
+          setIsLoading(false);
+          setLoadingSongId(null);
+        } catch (e) {
+          console.error("Error loading/playing audio:", e);
+          setPlayingId(null);
+          setCurrentTime(0);
+          setDuration(0);
+          setIsLoading(false);
+          setLoadingSongId(null);
+        }
+      } else {
         setIsLoading(false);
         setLoadingSongId(null);
       }
-    } else {
-      setIsLoading(false);
-      setLoadingSongId(null);
     }
-  }
-};
+  };
 
   const handleVolumeChange = (newVolume: number) => {
     setVolume(newVolume);
@@ -292,12 +270,12 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
     const x = e.clientX - rect.left;
     const percentage = Math.max(0, Math.min(1, x / rect.width));
     const newTime = percentage * duration;
-    
+
     try {
       audio.currentTime = newTime;
       setCurrentTime(newTime);
     } catch (error) {
-      console.error('Error seeking:', error);
+      console.error("Error seeking:", error);
     }
   };
 
@@ -305,17 +283,17 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
     if (!time || isNaN(time) || !isFinite(time)) return "0:00";
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
   const getCurrentSong = () => {
-    return favoriteSongs.find(song => song.id === playingId);
+    return favoriteSongs.find((song) => song.id === playingId);
   };
 
   const getMoodColor = (mood: string) => {
     switch (mood.toLowerCase()) {
       case "uplifting":
-        return isDark 
+        return isDark
           ? "bg-yellow-900/30 text-yellow-400 border-yellow-900/50"
           : "bg-yellow-100 text-yellow-700 border-yellow-200";
       case "energetic":
@@ -349,7 +327,11 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
 
   return (
     <section className="w-full mt-6">
-      <div className={`flex items-center gap-3 mb-6 text-${isDark ? 'white' : 'gray-900'}`}>
+      <div
+        className={`flex items-center gap-3 mb-6 text-${
+          isDark ? "white" : "gray-900"
+        }`}
+      >
         <Music className="w-5 h-5" />
         <h2 className="text-xl font-semibold tracking-tight">Favorite Songs</h2>
       </div>
@@ -368,12 +350,16 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
               <div className="flex items-center gap-4">
                 {/* Album Art / Play Button */}
                 <div
-                  className={`relative w-16 h-16 rounded-lg bg-gradient-to-br ${song.coverColor} flex items-center justify-center transition-transform ${
-                    isButtonDisabled(song.id) 
-                      ? 'cursor-not-allowed opacity-70' 
-                      : 'cursor-pointer hover:scale-105'
+                  className={`relative w-16 h-16 rounded-lg bg-gradient-to-br ${
+                    song.coverColor
+                  } flex items-center justify-center transition-transform ${
+                    isButtonDisabled(song.id)
+                      ? "cursor-not-allowed opacity-70"
+                      : "cursor-pointer hover:scale-105"
                   }`}
-                  onClick={() => !isButtonDisabled(song.id) && handlePlayPause(song)}
+                  onClick={() =>
+                    !isButtonDisabled(song.id) && handlePlayPause(song)
+                  }
                 >
                   {/* If you have a cover image URL, use it as background */}
                   {song.coverImageUrl ? (
@@ -383,7 +369,7 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
                       width={300}
                       height={300}
                       className={`w-16 h-16 rounded-lg object-cover ${
-                        isButtonDisabled(song.id) ? 'opacity-70' : ''
+                        isButtonDisabled(song.id) ? "opacity-70" : ""
                       }`}
                       quality={100}
                       priority
@@ -413,18 +399,33 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between mb-2">
                     <div className="min-w-0 flex-1">
-                      <h3 className={`font-semibold text-lg leading-tight truncate ${
-                        isDark ? "text-white" : "text-gray-900"
-                      }`}>
+                      <h3
+                        className={`font-semibold text-lg leading-tight truncate ${
+                          isDark ? "text-white" : "text-gray-900"
+                        }`}
+                      >
                         {song.title}
                       </h3>
                       <div className="flex items-center gap-2 mt-1">
-                        <User className={`w-3 h-3 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
-                        <span className={`text-sm ${isDark ? "text-gray-300" : "text-gray-600"}`}>
+                        <User
+                          className={`w-3 h-3 ${
+                            isDark ? "text-gray-400" : "text-gray-500"
+                          }`}
+                        />
+                        <span
+                          className={`text-sm ${
+                            isDark ? "text-gray-300" : "text-gray-600"
+                          }`}
+                        >
                           {song.artist}
                           {song.featuring && (
-                            <span className={isDark ? "text-gray-400" : "text-gray-500"}>
-                              {" "}ft. {song.featuring}
+                            <span
+                              className={
+                                isDark ? "text-gray-400" : "text-gray-500"
+                              }
+                            >
+                              {" "}
+                              ft. {song.featuring}
                             </span>
                           )}
                         </span>
@@ -432,8 +433,16 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
                     </div>
 
                     <div className="flex items-center gap-2 ml-4">
-                      <Clock className={`w-3 h-3 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
-                      <span className={`text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                      <Clock
+                        className={`w-3 h-3 ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        }`}
+                      />
+                      <span
+                        className={`text-sm ${
+                          isDark ? "text-gray-400" : "text-gray-500"
+                        }`}
+                      >
                         {song.duration}
                       </span>
                     </div>
@@ -517,22 +526,32 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
 
       {/* Music Player Controls - Only show when playing */}
       {playingId && getCurrentSong() && (
-        <Card className={`mt-6 ${
-          isDark
-            ? "bg-gray-800/50 border-gray-700/50"
-            : "bg-white border-gray-200"
-        }`}>
+        <Card
+          className={`mt-6 ${
+            isDark
+              ? "bg-gray-800/50 border-gray-700/50"
+              : "bg-white border-gray-200"
+          }`}
+        >
           <CardContent className="p-4">
             <div className="flex items-center gap-4">
               <div className="flex-1">
-                <h4 className={`font-medium ${isDark ? "text-white" : "text-gray-900"}`}>
+                <h4
+                  className={`font-medium ${
+                    isDark ? "text-white" : "text-gray-900"
+                  }`}
+                >
                   Now Playing: {getCurrentSong()?.title}
                 </h4>
-                <p className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>
+                <p
+                  className={`text-sm ${
+                    isDark ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
                   {getCurrentSong()?.artist}
                 </p>
               </div>
-              
+
               {/* Volume Control */}
               <div className="flex items-center gap-2">
                 <button
@@ -542,9 +561,17 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
                   }`}
                 >
                   {isMuted ? (
-                    <VolumeX className={`w-4 h-4 ${isDark ? "text-gray-400" : "text-gray-600"}`} />
+                    <VolumeX
+                      className={`w-4 h-4 ${
+                        isDark ? "text-gray-400" : "text-gray-600"
+                      }`}
+                    />
                   ) : (
-                    <Volume2 className={`w-4 h-4 ${isDark ? "text-gray-400" : "text-gray-600"}`} />
+                    <Volume2
+                      className={`w-4 h-4 ${
+                        isDark ? "text-gray-400" : "text-gray-600"
+                      }`}
+                    />
                   )}
                 </button>
                 <input
@@ -553,12 +580,14 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
                   max="1"
                   step="0.1"
                   value={volume}
-                  onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
+                  onChange={(e) =>
+                    handleVolumeChange(parseFloat(e.target.value))
+                  }
                   className="w-16"
                 />
               </div>
             </div>
-            
+
             {/* Progress Bar */}
             <div className="mt-3">
               <div className="flex items-center gap-2 text-xs">
@@ -574,7 +603,10 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
                   <div
                     className="h-full bg-blue-500 rounded-full transition-all"
                     style={{
-                      width: duration > 0 ? `${Math.min(100, (currentTime / duration) * 100)}%` : "0%"
+                      width:
+                        duration > 0
+                          ? `${Math.min(100, (currentTime / duration) * 100)}%`
+                          : "0%",
                     }}
                   />
                   {/* Progress indicator dot */}
@@ -582,8 +614,11 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
                     <div
                       className="absolute top-1/2 transform -translate-y-1/2 w-3 h-3 bg-blue-500 rounded-full border-2 border-white shadow-sm"
                       style={{
-                        left: `${Math.min(100, (currentTime / duration) * 100)}%`,
-                        marginLeft: '-6px'
+                        left: `${Math.min(
+                          100,
+                          (currentTime / duration) * 100
+                        )}%`,
+                        marginLeft: "-6px",
                       }}
                     />
                   )}
@@ -598,12 +633,16 @@ const FavoriteSongs = ({ theme }: FavoriteSongsProps) => {
       )}
 
       {/* Music Note */}
-      <div className={`mt-6 p-4 rounded-lg ${
-        isDark ? "bg-gray-800/30" : "bg-gray-50"
-      }`}>
-        <p className={`text-sm text-center ${
-          isDark ? "text-gray-400" : "text-gray-600"
-        }`}>
+      <div
+        className={`mt-6 p-4 rounded-lg ${
+          isDark ? "bg-gray-800/30" : "bg-gray-50"
+        }`}
+      >
+        <p
+          className={`text-sm text-center ${
+            isDark ? "text-gray-400" : "text-gray-600"
+          }`}
+        >
           <Music className="w-4 h-4 inline mr-2" />
           Music fuels my creativity and keeps me motivated while coding
         </p>

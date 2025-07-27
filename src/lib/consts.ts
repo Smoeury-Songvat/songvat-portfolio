@@ -94,4 +94,8 @@ export const images = [
     url: "/images/KNY.jpg",
     // title: "KNY 2025 Vibes",
   },
+  {
+    url: "/images/Jreav.JPG",
+    // title: "KNY 2025 Vibes",
+  },
 ];

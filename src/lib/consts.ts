@@ -1,4 +1,4 @@
-export const profile = "/images/angkorProfile.jpg";
+export const profile = "/images/AngkorProfile.jpg";
 
 export const favoriteSongs = [
   {

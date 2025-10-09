@@ -245,7 +245,7 @@ const Footer = ({ theme }: FooterProps) => {
             <span className={`text-sm ${
               isDark ? "text-gray-400" : "text-gray-600"
             }`}>
-              by Smoeury Songvat
+              by Smoeury Songvat (Not Officially)
             </span>
           </div>
           

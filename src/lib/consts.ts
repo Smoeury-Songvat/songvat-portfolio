@@ -1,3 +1,5 @@
+export const profile = "/images/angkorProfile.jpg";
+
 export const favoriteSongs = [
   {
     id: "1",
@@ -67,35 +69,33 @@ export const favoriteSongs = [
 
 export const images = [
   {
+    url: "/images/Preaskhan.JPG",
+  },
+  {
+    url: "/images/AngkorTake.JPG",
+  },
+  {
     url: "/images/selfie.jpg",
-    // title: "Selfie Vibes",
   },
   {
     url: "/images/Jroyjangvar.jpg",
-    // title: "Jroyjangvar Feels",
   },
   {
     url: "/images/FromBuilding.jpg",
-    // title: "Olampia Views",
   },
   {
     url: "/images/Krrirom.jpg",
-    // title: "Krrirom Adventures",
   },
   {
     url: "/images/PresentCADT.jpg",
-    // title: "CADT Moments",
   },
   {
     url: "/images/SunsetRUPP.jpg",
-    // title: "Golden Hour @ RUPP",
   },
   {
     url: "/images/KNY.jpg",
-    // title: "KNY 2025 Vibes",
   },
   {
     url: "/images/Jreav.JPG",
-    // title: "KNY 2025 Vibes",
   },
 ];

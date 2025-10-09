@@ -13,6 +13,7 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "../ui/Tooltip";
+import {profile} from "@/lib/consts";
 
 interface DescriptionProps {
   theme: string;
@@ -40,7 +41,7 @@ const Description = ({ theme }: DescriptionProps) => {
                 >
                   <CardContent className="p-0 relative">
                     <Avatar className="w-16 h-16">
-                      <AvatarImage src="https://avatars.githubusercontent.com/u/139366956?v=4" />
+                      <AvatarImage src={`${profile}`} />
                       <AvatarFallback>Profile</AvatarFallback>
                     </Avatar>
                     <span className="size-4 absolute right-0 bottom-0 rounded-full border border-background bg-green-300"></span>

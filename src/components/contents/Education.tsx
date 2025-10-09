@@ -15,18 +15,11 @@ interface EducationProps {
 const Education = ({ theme }: EducationProps) => {
   return (
     <>
-      <section className="w-full flex items-center justify-start mt-6">
+      <section className="w-full mt-6">
         <Card
-          className={`w-full max-w-lg border-none shadow-none rounded-2xl bg-${theme} text-${theme}-foreground `}
+          className={`w-full border-none shadow-none rounded-2xl bg-${theme} text-${theme}-foreground `}
         >
           <CardHeader className="flex flex-col items-start space-y-2 p-0 pb-2">
-            {/* <CardTitle className="flex items-center gap-3 ">
-              <GraduationCap className="w-5 h-5 text-muted-foreground" />
-              <h2 className="text-xl font-semibold tracking-tight">
-                Education
-              </h2>
-            </CardTitle> */}
-
             <div className={`flex items-center gap-3 text-${theme}-foreground`}>
               <GraduationCap className={`w-5 h-5 `} />
               <h2 className={`text-xl font-semibold tracking-tight`}>
@@ -38,7 +31,11 @@ const Education = ({ theme }: EducationProps) => {
             </CardDescription>
           </CardHeader>
 
-          <CardContent className="space-y-6 p-0">
+          <CardContent className={`w-full border rounded-xl space-y-6 p-6 transition-all duration-300 group hover:shadow-lg  ${
+              theme === "primary"
+                  ? "bg-gray-800/50 border-gray-700/50 hover:border-gray-600"
+                  : "bg-white border-gray-200 hover:border-gray-300"
+          } `}>
             <div className="flex items-center gap-4">
               <Image
                 src="https://upload.wikimedia.org/wikipedia/en/a/a2/RUPP_logo.PNG"
@@ -68,7 +65,7 @@ const Education = ({ theme }: EducationProps) => {
                 <h3 className="text-lg font-semibold">
                   Full Stack Web Development Certification
                 </h3>
-                <p className="text-sm opacity-80">Sabaicode (2023 - 2024)</p>
+                <p className="text-sm opacity-80">SabaiCode (2023 - 2024)</p>
               </div>
             </div>
           </CardContent>

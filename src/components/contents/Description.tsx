@@ -28,7 +28,7 @@ const Description = ({ theme }: DescriptionProps) => {
         >
           <CardHeader className="p-0">
             <CardTitle className="text-2xl font-extrabold font-mono tracking-wide ">
-              Smoeury Songvat
+              Smoeury Songvat <span className="text-xl text-slate-400">(Vathzz🧑‍🚀)</span>
             </CardTitle>
             <CardDescription >
               {`<Backend Developer>`}

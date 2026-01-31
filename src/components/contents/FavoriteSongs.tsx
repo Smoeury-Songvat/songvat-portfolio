@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { favoriteSongs } from "@/lib/consts";
 
-interface Song {
+export interface Song {
   id: string;
   title: string;
   artist: string;

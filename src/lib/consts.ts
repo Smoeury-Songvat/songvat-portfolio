@@ -1,3 +1,5 @@
+import { Song } from "@/components/contents/FavoriteSongs";
+
 export const profile = "/images/AngkorProfile.jpg";
 
 export const favoriteSongs = [
@@ -69,7 +71,7 @@ export const favoriteSongs = [
     id: "3",
     title: "About You",
     artist: "The 1975",
-    featuring: null,
+    featuring: '',
     duration: "5:26",
     genre: "Alternative Rock",
     year: "2022",
@@ -86,7 +88,7 @@ export const favoriteSongs = [
     id: "4",
     title: "Multo",
     artist: "Cup of Joe",
-    featuring: null,
+    featuring: '',
     duration: "4:12",
     genre: "OPM / Alternative",
     year: "2023",
@@ -99,7 +101,7 @@ export const favoriteSongs = [
     coverImageUrl:
       "https://i.scdn.co/image/ab67616d0000b273394048503e3be0e65e962638",
   },
-];
+] as Song[];
 
 const getImage = (name: string): string => `/images/${name}`;
 

@@ -113,5 +113,6 @@ export const images = [
   { url: getImage("PresentCADT.jpg") },
   { url: getImage("SunsetRUPP.jpg") },
   { url: getImage("KNY.jpg") },
-  // { url: getImage("Jreav.JPG") },
+  { url: getImage("Bokor.jpg") },
+  { url: getImage("Jreav.JPG") },
 ];

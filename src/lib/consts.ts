@@ -1,22 +1,22 @@
 export const profile = "/images/AngkorProfile.jpg";
 
 export const favoriteSongs = [
-  {
-    id: "1",
-    title: "មេឃបើកថ្ងៃ",
-    artist: "KWAN",
-    featuring: "Vannda",
-    duration: "3:37",
-    genre: "Khmer Pop",
-    year: "2023",
-    youtubeUrl: "https://www.youtube.com/watch?v=toJ4nn_WmeQ",
-    spotifyUrl: "https://open.spotify.com/track/6HWbL3uNRzkisSZoyqydaT",
-    audioUrl: "/audios/berkthgai.mp3",
-    coverColor: "from-orange-400 to-red-500",
-    language: "Khmer",
-    mood: "Uplifting",
-    coverImageUrl: "https://i.ytimg.com/vi/-9iQ_gmFjmA/maxresdefault.jpg",
-  },
+  // {
+  //   id: "1",
+  //   title: "មេឃបើកថ្ងៃ",
+  //   artist: "KWAN",
+  //   featuring: "Vannda",
+  //   duration: "3:37",
+  //   genre: "Khmer Pop",
+  //   year: "2023",
+  //   youtubeUrl: "https://www.youtube.com/watch?v=toJ4nn_WmeQ",
+  //   spotifyUrl: "https://open.spotify.com/track/6HWbL3uNRzkisSZoyqydaT",
+  //   audioUrl: "/audios/berkthgai.mp3",
+  //   coverColor: "from-orange-400 to-red-500",
+  //   language: "Khmer",
+  //   mood: "Uplifting",
+  //   coverImageUrl: "https://i.ytimg.com/vi/-9iQ_gmFjmA/maxresdefault.jpg",
+  // },
   // {
   //   id: "2",
   //   title: "ឆាឆាឆា (CHA CHA CHA)",
@@ -48,54 +48,70 @@ export const favoriteSongs = [
     mood: "Uplifting",
     coverImageUrl: "https://i.ytimg.com/vi/RvP-6ynP1tI/maxresdefault.jpg",
   },
+  // {
+  //   id: "3",
+  //   title: "Starboy",
+  //   artist: "The Weeknd",
+  //   featuring: "Daft Punk",
+  //   duration: "3:50",
+  //   genre: "Pop",
+  //   year: "2016",
+  //   youtubeUrl: "https://www.youtube.com/watch?v=34Na4j8AVgA",
+  //   spotifyUrl: "https://open.spotify.com/track/7MXVkk9YMctZqd1Srtv4MB",
+  //   audioUrl: "/audios/Starboy.mp3",
+  //   coverColor: "from-blue-900 to-yellow-500",
+  //   language: "English",
+  //   mood: "Chill",
+  //   coverImageUrl:
+  //     "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e2/61/f8/e261f8c1-73db-9a7a-c89e-1068f19970e0/16UMGIM67863.rgb.jpg/1200x630bb.jpg",
+  // },
   {
     id: "3",
-    title: "Starboy",
-    artist: "The Weeknd",
-    featuring: "Daft Punk",
-    duration: "3:50",
-    genre: "Pop",
-    year: "2016",
-    youtubeUrl: "https://www.youtube.com/watch?v=34Na4j8AVgA",
-    spotifyUrl: "https://open.spotify.com/track/7MXVkk9YMctZqd1Srtv4MB",
-    audioUrl: "/audios/Starboy.mp3",
-    coverColor: "from-blue-900 to-yellow-500",
+    title: "About You",
+    artist: "The 1975",
+    featuring: null,
+    duration: "5:26",
+    genre: "Alternative Rock",
+    year: "2022",
+    youtubeUrl: "https://www.youtube.com/watch?v=tGv7CUutzqU",
+    spotifyUrl: "https://open.spotify.com/artist/3mIj9lX2MWuHmhNCA7LSCW",
+    audioUrl: "/audios/The1975.mp3",
+    coverColor: "from-gray-900 to-indigo-700",
     language: "English",
-    mood: "Chill",
+    mood: "Melancholic",
     coverImageUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e2/61/f8/e261f8c1-73db-9a7a-c89e-1068f19970e0/16UMGIM67863.rgb.jpg/1200x630bb.jpg",
+      "https://i.scdn.co/image/ab67616d00001e0200702474f8e0e2b6155d48e3",
+  },
+  {
+    id: "4",
+    title: "Multo",
+    artist: "Cup of Joe",
+    featuring: null,
+    duration: "4:12",
+    genre: "OPM / Alternative",
+    year: "2023",
+    youtubeUrl: "https://www.youtube.com/watch?v=Rht8rS4cR1s&list=RDRht8rS4cR1s",
+    spotifyUrl: "https://open.spotify.com/track/4cBm8rv2B5BJWU2pDaHVbF",
+    audioUrl: "/audios/Multo.mp3",
+    coverColor: "from-emerald-900 to-teal-600",
+    language: "Filipino",
+    mood: "Emotional",
+    coverImageUrl:
+      "https://i.scdn.co/image/ab67616d0000b273394048503e3be0e65e962638",
   },
 ];
 
+const getImage = (name: string): string => `/images/${name}`;
+
 export const images = [
-  {
-    url: "/images/Preaskhan.JPG",
-  },
-  {
-    url: "/images/AngkorTake.JPG",
-  },
-  {
-    url: "/images/selfie.jpg",
-  },
-  {
-    url: "/images/Jroyjangvar.jpg",
-  },
-  {
-    url: "/images/FromBuilding.jpg",
-  },
-  {
-    url: "/images/Krrirom.jpg",
-  },
-  {
-    url: "/images/PresentCADT.jpg",
-  },
-  {
-    url: "/images/SunsetRUPP.jpg",
-  },
-  {
-    url: "/images/KNY.jpg",
-  },
-  {
-    url: "/images/Jreav.JPG",
-  },
+  { url: getImage("Preaskhan.JPG") },
+  { url: getImage("AngkorTake.JPG") },
+  // { url: getImage("selfie.jpg") },
+  { url: getImage("Jroyjangvar.jpg") },
+  // { url: getImage("FromBuilding.jpg") },
+  { url: getImage("Krrirom.jpg") },
+  { url: getImage("PresentCADT.jpg") },
+  { url: getImage("SunsetRUPP.jpg") },
+  { url: getImage("KNY.jpg") },
+  // { url: getImage("Jreav.JPG") },
 ];
